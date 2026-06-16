@@ -140,7 +140,7 @@ export default function Pesagem() {
     }
 
     try {
-      await request("/api/pesagem/finish", {
+      await request("/api/pesagem/complete", {
         method: "POST",
         body: JSON.stringify({
           op_id: selectedOP.id,

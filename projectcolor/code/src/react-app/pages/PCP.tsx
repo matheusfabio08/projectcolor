@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Layout from "@/react-app/components/Layout";
 import { useAPI } from "@/react-app/hooks/useAPI";
-import { 
-  Clock, AlertCircle, CheckCircle2, TrendingUp, Target, BarChart3, 
+import {
+  Clock, AlertCircle, CheckCircle2, TrendingUp, Target, BarChart3,
   Calendar, Flag, ArrowUpCircle, Package, Users, AlertTriangle,
   Activity, Eye, Edit2, Save, X, FlaskConical, MapPin, Truck, Plus, Trash2
 } from "lucide-react";
@@ -37,9 +37,9 @@ function RegionBadges({ op }: { op: OP }) {
   if (op.region_jaragua === 1) regions.push("Jaraguá");
   if (op.region_brusque === 1) regions.push("Brusque");
   if (op.region_gaspar === 1) regions.push("Gaspar");
-  
+
   if (regions.length === 0) return null;
-  
+
   return (
     <div className="flex flex-wrap gap-1 mt-1">
       {regions.map(region => (
@@ -128,14 +128,14 @@ export default function PCPPage() {
   const [listaSaida, setListaSaida] = useState<ListaSaida[]>([]);
   const [transportadoras, setTransportadoras] = useState<Transportadora[]>([]);
   const [regioes, setRegioes] = useState<Regiao[]>([]);
-  
+
   // Lista de Saída form state
   const [selectedOpForLista, setSelectedOpForLista] = useState<OP | null>(null);
   const [selectedOpsForLista, setSelectedOpsForLista] = useState<number[]>([]);
   const [exitDate, setExitDate] = useState("");
   const [exitTime, setExitTime] = useState("");
   const [selectedTransportadoraRegiao, setSelectedTransportadoraRegiao] = useState("");
-  
+
   // Edit priority state
   const [editingPriority, setEditingPriority] = useState<number | null>(null);
   const [editPriorityValue, setEditPriorityValue] = useState(0);
@@ -166,8 +166,9 @@ export default function PCPPage() {
       setPriorityOps(priorityData);
       setFinalizedLabOps((labData || []).filter((r: any) => r.lab_record_id != null).map((r: any) => r.id));
       setListaSaida(listaSaidaData || []);
-      setTransportadoras((transportadorasData || []).filter((t: Transportadora) => t.is_active === 1));
-      setRegioes((regioesData || []).filter((r: Regiao) => r.is_active === 1));
+      setTransportadoras((transportadorasData || []).filter((t: Transportadora) => Boolean(t.is_active)));
+      setRegioes((regioesData || []).filter((r: Regiao) => Boolean(r.is_active)));
+
     } catch (error) {
       console.error("Failed to load data:", error);
     } finally {
@@ -230,8 +231,8 @@ export default function PCPPage() {
 
   // Lista de Saída functions
   function toggleOpSelection(opId: number) {
-    setSelectedOpsForLista(prev => 
-      prev.includes(opId) 
+    setSelectedOpsForLista(prev =>
+      prev.includes(opId)
         ? prev.filter(id => id !== opId)
         : [...prev, opId]
     );
@@ -246,10 +247,10 @@ export default function PCPPage() {
   }
 
   async function handleAddToListaSaida() {
-    const opsToAdd = selectedOpsForLista.length > 0 
-      ? selectedOpsForLista 
+    const opsToAdd = selectedOpsForLista.length > 0
+      ? selectedOpsForLista
       : selectedOpForLista ? [selectedOpForLista.id] : [];
-    
+
     if (opsToAdd.length === 0 || !exitDate) {
       alert("Selecione pelo menos uma OP e uma data de saída");
       return;
@@ -337,77 +338,70 @@ export default function PCPPage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-2 flex gap-2 overflow-x-auto">
           <button
             onClick={() => setView("indicators")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
-              view === "indicators"
-                ? "bg-blue-500 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${view === "indicators"
+              ? "bg-blue-500 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+              }`}
           >
             <Activity className="w-5 h-5" />
             Indicadores
           </button>
           <button
             onClick={() => setView("kanban")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
-              view === "kanban"
-                ? "bg-blue-500 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${view === "kanban"
+              ? "bg-blue-500 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+              }`}
           >
             <Package className="w-5 h-5" />
             Kanban
           </button>
           <button
             onClick={() => setView("planning")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
-              view === "planning"
-                ? "bg-blue-500 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${view === "planning"
+              ? "bg-blue-500 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+              }`}
           >
             <Target className="w-5 h-5" />
             Planejamento
           </button>
           <button
             onClick={() => setView("deadlines")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
-              view === "deadlines"
-                ? "bg-blue-500 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${view === "deadlines"
+              ? "bg-blue-500 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+              }`}
           >
             <Calendar className="w-5 h-5" />
             Prazos
           </button>
           <button
             onClick={() => setView("capacity")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
-              view === "capacity"
-                ? "bg-blue-500 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${view === "capacity"
+              ? "bg-blue-500 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+              }`}
           >
             <BarChart3 className="w-5 h-5" />
             Capacidade
           </button>
           <button
             onClick={() => setView("lab_deadlines")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
-              view === "lab_deadlines"
-                ? "bg-purple-500 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${view === "lab_deadlines"
+              ? "bg-purple-500 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+              }`}
           >
             <FlaskConical className="w-5 h-5" />
             Prazos Laboratório
           </button>
           <button
             onClick={() => setView("lista_saida")}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${
-              view === "lista_saida"
-                ? "bg-green-500 text-white"
-                : "text-gray-700 hover:bg-gray-100"
-            }`}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all whitespace-nowrap ${view === "lista_saida"
+              ? "bg-green-500 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+              }`}
           >
             <Truck className="w-5 h-5" />
             Lista de Saída
@@ -483,9 +477,8 @@ export default function PCPPage() {
                       onClick={() => handleOPClick(op.id)}
                     >
                       <div className="flex items-center gap-4 flex-1">
-                        <div className={`px-3 py-1 rounded-full text-xs font-bold ${
-                          priorityLabels[op.priority]?.color || priorityLabels[0].color
-                        }`}>
+                        <div className={`px-3 py-1 rounded-full text-xs font-bold ${priorityLabels[op.priority]?.color || priorityLabels[0].color
+                          }`}>
                           {priorityLabels[op.priority]?.label || "Normal"}
                         </div>
                         <div>
@@ -576,9 +569,8 @@ export default function PCPPage() {
                               <div className="font-semibold text-gray-900">OP {op.op_number}</div>
                               <div className="flex gap-1">
                                 {op.priority > 0 && (
-                                  <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                                    priorityLabels[op.priority]?.color || priorityLabels[0].color
-                                  }`}>
+                                  <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${priorityLabels[op.priority]?.color || priorityLabels[0].color
+                                    }`}>
                                     {priorityLabels[op.priority]?.label || "Normal"}
                                   </span>
                                 )}
@@ -682,9 +674,8 @@ export default function PCPPage() {
                         </div>
                       ) : (
                         <>
-                          <div className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            priorityLabels[op.priority || 0]?.color || priorityLabels[0].color
-                          }`}>
+                          <div className={`px-3 py-1 rounded-full text-xs font-bold ${priorityLabels[op.priority || 0]?.color || priorityLabels[0].color
+                            }`}>
                             {priorityLabels[op.priority || 0]?.label || "Normal"}
                           </div>
                           <div className="flex-1">
@@ -750,23 +741,21 @@ export default function PCPPage() {
                     return (
                       <div
                         key={op.id}
-                        className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all ${
-                          overdue
-                            ? "bg-red-50 border-2 border-red-300 hover:bg-red-100"
-                            : urgent
+                        className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all ${overdue
+                          ? "bg-red-50 border-2 border-red-300 hover:bg-red-100"
+                          : urgent
                             ? "bg-orange-50 border-2 border-orange-300 hover:bg-orange-100"
                             : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
-                        }`}
+                          }`}
                         onClick={() => handleOPClick(op.id)}
                       >
                         <div className="flex items-center gap-4 flex-1">
-                          <div className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            overdue
-                              ? "bg-red-600 text-white"
-                              : urgent
+                          <div className={`px-3 py-1 rounded-full text-xs font-bold ${overdue
+                            ? "bg-red-600 text-white"
+                            : urgent
                               ? "bg-orange-600 text-white"
                               : "bg-blue-100 text-blue-700"
-                          }`}>
+                            }`}>
                             {overdue ? `${Math.abs(daysUntil)}d atraso` : urgent ? `${daysUntil}d restantes` : `${daysUntil}d`}
                           </div>
                           <div>
@@ -776,9 +765,8 @@ export default function PCPPage() {
                         </div>
                         <div className="text-right">
                           <div className="text-sm font-medium text-gray-900">{op.status}</div>
-                          <div className={`text-xs font-semibold ${
-                            overdue ? "text-red-600" : urgent ? "text-orange-600" : "text-gray-500"
-                          }`}>
+                          <div className={`text-xs font-semibold ${overdue ? "text-red-600" : urgent ? "text-orange-600" : "text-gray-500"
+                            }`}>
                             {new Date(op.expected_date).toLocaleDateString('pt-BR')}
                           </div>
                         </div>
@@ -811,16 +799,15 @@ export default function PCPPage() {
                   return (
                     <div
                       key={stage}
-                      className={`p-6 rounded-xl border-2 ${
-                        isOverloaded
-                          ? "bg-red-50 border-red-300"
-                          : isUrgent
+                      className={`p-6 rounded-xl border-2 ${isOverloaded
+                        ? "bg-red-50 border-red-300"
+                        : isUrgent
                           ? "bg-orange-50 border-orange-300"
                           : "bg-gray-50 border-gray-200"
-                      }`}
+                        }`}
                     >
                       <h3 className="font-semibold text-gray-900 mb-3">{stageInfo.label}</h3>
-                      
+
                       <div className="space-y-3">
                         <div>
                           <div className="flex justify-between text-sm mb-1">
@@ -829,9 +816,8 @@ export default function PCPPage() {
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-3">
                             <div
-                              className={`h-3 rounded-full transition-all ${
-                                isOverloaded ? "bg-red-500" : "bg-blue-500"
-                              }`}
+                              className={`h-3 rounded-full transition-all ${isOverloaded ? "bg-red-500" : "bg-blue-500"
+                                }`}
                               style={{ width: `${utilizationPercent}%` }}
                             />
                           </div>
@@ -909,30 +895,28 @@ export default function PCPPage() {
                     const today = new Date();
                     const labExitDate = addBusinessDays(entryDate, 2);
                     const daysInLab = differenceInBusinessDays(today, entryDate);
-                    
+
                     const isDelayed = daysInLab >= 3;
                     const isUrgent = daysInLab === 2;
 
                     return (
                       <div
                         key={op.id}
-                        className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all ${
-                          isDelayed
-                            ? "bg-red-100 border-2 border-red-400 hover:bg-red-200"
-                            : isUrgent
+                        className={`flex items-center justify-between p-4 rounded-lg cursor-pointer transition-all ${isDelayed
+                          ? "bg-red-100 border-2 border-red-400 hover:bg-red-200"
+                          : isUrgent
                             ? "bg-yellow-100 border-2 border-yellow-400 hover:bg-yellow-200"
                             : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
-                        }`}
+                          }`}
                         onClick={() => handleOPClick(op.id)}
                       >
                         <div className="flex items-center gap-4 flex-1">
-                          <div className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            isDelayed
-                              ? "bg-red-600 text-white"
-                              : isUrgent
+                          <div className={`px-3 py-1 rounded-full text-xs font-bold ${isDelayed
+                            ? "bg-red-600 text-white"
+                            : isUrgent
                               ? "bg-yellow-600 text-white"
                               : "bg-purple-100 text-purple-700"
-                          }`}>
+                            }`}>
                             {isDelayed ? "Atrasado" : isUrgent ? "Urgente" : `${daysInLab}d no lab`}
                           </div>
                           <div>
@@ -945,9 +929,8 @@ export default function PCPPage() {
                           <div className="text-sm font-medium text-gray-700">
                             Entrada: {entryDate.toLocaleDateString('pt-BR')}
                           </div>
-                          <div className={`text-xs font-semibold ${
-                            isDelayed ? "text-red-600" : isUrgent ? "text-yellow-700" : "text-purple-600"
-                          }`}>
+                          <div className={`text-xs font-semibold ${isDelayed ? "text-red-600" : isUrgent ? "text-yellow-700" : "text-purple-600"
+                            }`}>
                             Previsão Saída: {labExitDate.toLocaleDateString('pt-BR')}
                           </div>
                           <div className="text-xs text-gray-500 mt-1">
@@ -957,7 +940,7 @@ export default function PCPPage() {
                       </div>
                     );
                   })}
-                  
+
                 {ops.filter(op => op.requires_lab === 1 && !finalizedLabOps.includes(op.id)).length === 0 && (
                   <div className="text-center py-8 text-gray-500">
                     Nenhuma OP com marcação de laboratório pendente
@@ -1000,11 +983,10 @@ export default function PCPPage() {
                     </thead>
                     <tbody>
                       {availableOpsForLista.map((op) => (
-                        <tr 
-                          key={op.id} 
-                          className={`border-b border-gray-100 hover:bg-green-50 cursor-pointer transition-colors ${
-                            selectedOpsForLista.includes(op.id) ? "bg-green-100" : ""
-                          }`}
+                        <tr
+                          key={op.id}
+                          className={`border-b border-gray-100 hover:bg-green-50 cursor-pointer transition-colors ${selectedOpsForLista.includes(op.id) ? "bg-green-100" : ""
+                            }`}
                           onClick={() => toggleOpSelection(op.id)}
                         >
                           <td className="py-3 px-2 text-center">
@@ -1046,7 +1028,7 @@ export default function PCPPage() {
                   <Plus className="w-6 h-6 text-green-600" />
                   Agendar Saída
                 </h2>
-                
+
                 {selectedOpsForLista.length > 0 ? (
                   <div className="space-y-4">
                     {/* Selected OPs info */}

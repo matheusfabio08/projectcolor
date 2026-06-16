@@ -5,8 +5,8 @@
     "types": ["vite/client", "./worker-configuration.d.ts"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]
     }
   },
-  "include": ["src/worker"]
+  "include": ["src/worker", "src"]
 }

@@ -12,6 +12,7 @@ export function useAPI<T>() {
       const sessionToken = localStorage.getItem("sessionToken");
       const response = await fetch(url, {
         ...options,
+        credentials: "include", // ← garante envio do cookie colortim_session
         headers: {
           "Content-Type": "application/json",
           ...(sessionToken ? { "X-Session-Token": sessionToken } : {}),
@@ -20,7 +21,13 @@ export function useAPI<T>() {
       });
 
       if (!response.ok) {
-        throw new Error(`Erro: ${response.statusText}`);
+        // Tenta extrair mensagem do JSON de erro
+        let errMsg = response.statusText;
+        try {
+          const errData = await response.json();
+          errMsg = errData.error || errMsg;
+        } catch {}
+        throw new Error(`Erro ${response.status}: ${errMsg}`);
       }
 
       const result = await response.json();

@@ -98,7 +98,7 @@ export default function Almoxarifado() {
   const fetchFibras = async () => {
     try {
       const result = await request("/api/fibras");
-      setFibras(result.filter((f: Fibra) => f.is_active === 1));
+      setFibras(result.filter((f: Fibra) => f.is_active === true || (f.is_active as any) === 1));
     } catch (error) {
       console.error("Error fetching fibras:", error);
     }

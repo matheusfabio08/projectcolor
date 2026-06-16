@@ -6,7 +6,7 @@ interface User {
   name: string;
   email: string;
   role: string;
-  is_active: number;
+  is_active: boolean;
 }
 
 interface AuthContextType {
@@ -35,7 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         sessionToken = null;
       }
 
-      const response = await fetch("http://localhost:3000/api/auth/me", {
+      // ✅ URL relativa — usa o proxy do Vite, garante que o cookie seja enviado corretamente
+      const response = await fetch("/api/auth/me", {
         credentials: "include",
         headers: sessionToken ? { "X-Session-Token": sessionToken } : {},
       });
@@ -43,6 +44,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         setUser(data);
+      } else {
+        localStorage.removeItem("sessionToken");
       }
     } catch (error) {
       console.error("Auth check failed:", error);
@@ -52,7 +55,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const login = async (username: string, password: string) => {
-    const response = await fetch("http://localhost:3000/api/auth/login", {
+    // ✅ URL relativa
+    const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -80,7 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await fetch("http://localhost:3000/api/auth/logout", {
+    // ✅ URL relativa
+    await fetch("/api/auth/logout", {
       method: "POST",
       credentials: "include",
     });
